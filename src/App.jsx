@@ -2,7 +2,7 @@ import "./App.css";
 import { Table } from "react-bootstrap";
 import { db } from "./firebase";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
 function App() {
   const [waitlistData, setWaitlistData] = useState([]);
@@ -11,7 +11,8 @@ function App() {
     const fetchData = async () => {
       try {
         const userRef = collection(db, "waitlist");
-        const snapshot = await getDocs(userRef);
+        const q = query(userRef, orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
